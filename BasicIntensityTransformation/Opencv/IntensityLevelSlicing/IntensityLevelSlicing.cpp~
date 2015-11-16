@@ -22,7 +22,7 @@ for(int j= 0; j< N; j++)
 {
   if(data[j] >min)
     data[j] = 255;
-else data[j] = 0;
+else data[i] = 0;
 }
 }
 imshow("Processed Image", image);
