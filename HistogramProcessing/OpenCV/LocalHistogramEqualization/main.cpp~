@@ -8,14 +8,14 @@
 using namespace cv;
 using namespace std;
 
-void localhistogram(Mat &tmpimage,int i,int j,int hist[])
+void localhistogram(Mat &tmpimage,int i,int j,int s,int hist[])
 { int a,b,x;
   int k;
   k=tmpimage.at<uchar>(i,j);
  for(x=0;x<256;x++)
  {hist[x]=0;}
- for(a=i-1;a<=i+1;a++)
- {    for(b=j-1;b<=j+1;b++)
+ for(a=i-s;a<=i+s;a++)
+ {    for(b=j-s;b<=j+s;b++)
      {
       hist[tmpimage.at<uchar>(a,b)]++;
      }
@@ -29,16 +29,21 @@ void localhistogrameq(Mat &image)
    if(!image.data)
    {cout<<"fail to load image."<<endl;}
    imshow("origin",image);
-   copyMakeBorder(image,tmpimage,1,1,1,1,BORDER_CONSTANT,0);
+   cout<<"Enter the size of neighborhood:"<<endl;
+   int size;
+   cin>>size;
+   int s=(size-1)/2;
+   int total=size*size;
+   copyMakeBorder(image,tmpimage,s,s,s,s,BORDER_CONSTANT,0);
    int m=tmpimage.rows;
    int n=tmpimage.cols;
    int hist[256];
-   for(int i=1;i<m-1;i++)
+   for(int i=s;i<m-s;i++)
   {
-     for(int j=1;j<n-1;j++)
+     for(int j=s;j<n-s;j++)
     {
-      localhistogram(tmpimage,i,j,hist);  
-      image.at<uchar>(i-1,j-1)=static_cast<int>(255*hist[tmpimage.at<uchar>(i,j)]/9);
+      localhistogram(tmpimage,i,j,s,hist);  
+      image.at<uchar>(i-s,j-s)=static_cast<int>(255*hist[tmpimage.at<uchar>(i,j)]/total);
     }
   }
   imshow("processed image",image);
@@ -47,7 +52,6 @@ void localhistogrameq(Mat &image)
 int main(int argc, char *argv[])
 {
    Mat image;
-   Mat dstimage;
    if(argc>2)
   {
       switch(argv[1][1])
