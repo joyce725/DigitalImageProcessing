@@ -1,2 +1,9 @@
-## Temporary files:
+# Temporary files:
 *~
+# Redundant CMake files:
+CMakeFiles/
+Makefile
+*cmake
+*txt
+!CMakeLists.txt
+
