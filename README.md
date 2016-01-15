@@ -1,5 +1,5 @@
 # DigitalImageProcessing
   
-  This repository contains some OpenCV code and MATLAB code of digital image processing.
+  This repository contains some OpenCV codes and MATLAB codes of digital image processing.
   
   
