@@ -6,4 +6,5 @@ Makefile
 *cmake
 *txt
 !CMakeLists.txt
-
+# Redundant files for Mac:
+.DS_Store
