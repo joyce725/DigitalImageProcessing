@@ -1,44 +1,50 @@
-#include "opencv2/core.hpp"
-#include"opencv2/imgproc/imgproc.hpp"
-#include "opencv2/highgui.hpp"
 #include<iostream>
+#include<opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 using namespace cv;
 using namespace std;
-
 int main()
-{Mat image=imread("origin.jpg",0);
- imshow("origin",image);
- if(!image.data){cout<<"fail to load image"<<endl;return 0;}
- MatND imhist;
- int dims=1;
- float hranges[]={0,255};
- const float *ranges[]={hranges};
- int size=256;
- int channels=0;
- int M=image.rows;
- int N=image.cols*image.channels();
- int total=M*N;
- int i,j;
- int tmp;
- calcHist(&image,1,&channels,Mat(),imhist,dims,&size,ranges);
- //计算已知图像的直方图
- for(i=1;i<256;i++)
- {
-  imhist.at<float>(i)=imhist.at<float>(i)+imhist.at<float>(i-1);
- } //对直方图中的值进行叠加,直方图的值表示的是不同灰度级的像素
- for(i=0;i<M;i++)
 {
-  uchar *data=image.ptr<uchar>(i);
- for(j=0;j<N;j++)
- { tmp=static_cast<int>(255* imhist.at<float>(data[j])/total);
-  if(data[j]<0) data[j]=0;
-  else if(data[j]>255) data[j]=255;
-  else data[j]=tmp;
- }  //对灰度值进行映射
-}
-imshow("processed image",image);
-waitKey(0);
-
+    Mat input = imread("origin.jpg",0);
+    imshow("original image",input);
+    int rows =input.rows;
+    int cols = input.cols;
+    int i,j;
+    double number[256],p[256],sum[256];
+    int imhist[256];
+    sum[0]=0;
+    
+    for(i = 0; i < rows; i++)
+    {
+        for(j = 0; j < cols; j++)
+        {
+            number[input.at<uchar>(i,j)]++;
+        }
+    }
+    for(i=0; i<256; i++)
+    {
+        p[i]=number[i]/(double)(rows*cols);
+    }
+    sum[0]=p[0];
+    
+    for (i=1; i<256; i++) {
+        sum[i]=sum[i-1]+p[i];
+    }
+    for (i=0; i<256; i++) {
+        sum[i]=sum[i]*255;
+        imhist[i]=(int)(sum[i]+0.5);
+    }
+    for(i = 0; i < rows; i++)
+    {
+        for(j = 0; j < cols; j++)
+        {
+            input.at<uchar>(i,j)=imhist[input.at<uchar>(i,j)];
+        }
+    }
+    
+    imwrite("result.jpg", input);
+    return 0;
 }
  
  
